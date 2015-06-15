@@ -1,10 +1,16 @@
 #![cfg_attr(test, allow(dead_code))]
 
 extern crate arguments;
+extern crate sqlite;
 
 use arguments::Arguments;
-use std::{env, process};
+use sqlite::Database;
 use std::fmt::Display;
+use std::path::Path;
+use std::{env, process};
+
+const CORE_LIKE: &'static str = "core%_area";
+const L3_LIKE: &'static str = "l3%_area";
 
 const USAGE: &'static str = "
 Usage: layer [options]
@@ -16,11 +22,8 @@ Options:
     --help                   Display this message.
 ";
 
-macro_rules! print_error(
-    ($fmt:expr, $($args:tt)*) => ({
-        use std::io::Write;
-        ::std::io::stderr().write_fmt(format_args!($fmt, $($args)*)).unwrap()
-    });
+macro_rules! die(
+    ($($arg:tt)*) => (fail(format!($($arg)*)));
 );
 
 macro_rules! ok(
@@ -30,11 +33,36 @@ macro_rules! ok(
     });
 );
 
+macro_rules! print_error(
+    ($($arg:tt)*) => ({
+        use std::io::Write;
+        ::std::io::stderr().write_fmt(format_args!($($arg)*)).unwrap_or(())
+    });
+);
+
 fn main() {
     let Arguments { options, .. } = ok!(arguments::parse(env::args()));
-    match options.get_ref::<String>("database") {
-        Some(_) => {},
+
+    let database = match options.get_ref::<String>("database") {
+        Some(database) => ok!(sqlite::open(&Path::new(database))),
         _ => usage(USAGE),
+    };
+    let (core, l3) = match options.get_ref::<String>("table") {
+        Some(table) => (find(&database, table, CORE_LIKE), find(&database, table, L3_LIKE)),
+        _ => usage(USAGE),
+    };
+    println!("Core: {}", core);
+    println!("L3: {}", l3);
+}
+
+fn find(database: &Database, table: &str, like: &str) -> f64 {
+    use sqlite::State;
+    let mut statement = ok!(database.prepare(&format!(
+        "SELECT name, value FROM `{}` WHERE name LIKE '{}' LIMIT 1;", table, like,
+    )));
+    match ok!(statement.step()) {
+        State::Row => ok!(statement.column::<f64>(0 + 1)),
+        _ => die!("failed to find a required value in the table"),
     }
 }
 
