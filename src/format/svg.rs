@@ -53,7 +53,7 @@ r#"<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="{width:.0}" heig
         fill: #ecb01f;
     }}
   </style>
-  <g transform="translate(0, 100%) scale(1, -1)">
+  <g transform="translate(0, {height:.0}) scale(1, -1)">
     {body}
   </g>
 </svg>
