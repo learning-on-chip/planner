@@ -13,7 +13,7 @@ const CORE_LIKE: &'static str = "core%_area";
 const L3_LIKE: &'static str = "l3%_area";
 
 const USAGE: &'static str = "
-Usage: layer [options]
+Usage: gunsmith [options]
 
 Options:
     --database PATH          SQLite3 database (required).
