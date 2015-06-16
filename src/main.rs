@@ -3,9 +3,8 @@
 extern crate arguments;
 extern crate sqlite;
 
-mod layout;
-
 use sqlite::Database;
+use std::io;
 use std::fmt::Display;
 use std::path::Path;
 use std::{env, process};
@@ -43,6 +42,9 @@ macro_rules! usage(
     () => (usage());
 );
 
+mod format;
+mod layout;
+
 pub type Result<T> = std::result::Result<T, Box<Display>>;
 
 fn main() {
@@ -50,10 +52,13 @@ fn main() {
 }
 
 fn start() -> Result<()> {
+    use format::Format;
+    use layout::Layout;
+
     let arguments = ok!(arguments::parse(env::args()));
 
-    let cores = match arguments.get::<usize>("cores") {
-        Some(cores) => cores,
+    let core_count = match arguments.get::<usize>("cores") {
+        Some(core_count) => core_count,
         _ => usage!(),
     };
     let database = match arguments.get::<String>("database") {
@@ -67,7 +72,16 @@ fn start() -> Result<()> {
         _ => usage!(),
     };
 
-    layout::generate(core_area, l3_area, cores)
+    let spec = layout::Spec {
+        core_count: core_count,
+        core_area: core_area,
+        l3_area: l3_area,
+    };
+
+    let layout = layout::Tiles::new();
+    let format = format::ThreeDICE::new();
+
+    format.print(&ok!(layout.construct(&spec)), io::stdout())
 }
 
 fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
@@ -82,8 +96,8 @@ fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
 }
 
 fn fail<E: Display>(error: E) -> ! {
-    use std::io::{stderr, Write};
-    stderr().write_fmt(format_args!("Error: {}.\n", error)).unwrap_or(());
+    use std::io::Write;
+    io::stderr().write_fmt(format_args!("Error: {}.\n", error)).unwrap_or(());
     process::exit(1);
 }
 
