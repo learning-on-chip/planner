@@ -19,8 +19,8 @@ Options:
     --database <path>        SQLite3 database (required).
     --table <name>           Table containing area estimates (required).
     --cores <number>         Number of cores (required).
-
     --format (3d-ice|svg)    Output format [default: 3d-ice].
+
     --help                   Display this message.
 ";
 
@@ -70,7 +70,7 @@ fn start() -> Result<()> {
     };
     let core_count = match arguments.get::<usize>("cores") {
         Some(core_count) if core_count > 0 => core_count,
-        _ => raise!("the number of cores is required and should be positive"),
+        _ => raise!("a number of cores is required"),
     };
 
     let spec = layout::Spec {
@@ -100,9 +100,14 @@ fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
     })
 }
 
+#[allow(unused_must_use)]
 fn fail<E: Display>(error: E) -> ! {
     use std::io::Write;
-    io::stderr().write_fmt(format_args!("Error: {}.\n", error)).unwrap_or(());
+    let message = format!("Error: {}.\n", error);
+    io::stderr().write_all(message.as_bytes());
+    if message.contains("required") {
+        io::stderr().write_all(format!("\n{}\n", USAGE.trim()).as_bytes());
+    }
     process::exit(1);
 }
 
