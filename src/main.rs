@@ -16,11 +16,11 @@ const USAGE: &'static str = "
 Usage: gunsmith [options]
 
 Options:
-    --database PATH          SQLite3 database (required).
-    --table    NAME          Table to look for area measurements (required).
-    --cores    NUMBER        Number of cores (required).
-    --format   NAME          Output format (default svg).
+    --database <path>        SQLite3 database (required).
+    --table <name>           Table containing area estimates (required).
+    --cores <number>         Number of cores (required).
 
+    --format (3d-ice|svg)    Output format [default: 3d-ice].
     --help                   Display this message.
 ";
 
@@ -80,9 +80,9 @@ fn start() -> Result<()> {
     };
 
     let layout = layout::Tiles::new();
-    let format = match &arguments.get::<String>("format").unwrap_or("svg".to_string())[..] {
-        "svg" => Box::new(format::SVG::new()) as Box<Format>,
-        "3d-ice" => Box::new(format::ThreeDICE::new()) as Box<Format>,
+    let format = match &arguments.get::<String>("format").unwrap_or("3d-ice".to_string())[..] {
+        "svg" => Box::new(format::SVG) as Box<Format>,
+        "3d-ice" => Box::new(format::ThreeDICE) as Box<Format>,
         _ => raise!("the output format is unknown"),
     };
 
@@ -107,6 +107,6 @@ fn fail<E: Display>(error: E) -> ! {
 }
 
 fn usage() -> ! {
-    println!("{}", USAGE);
+    println!("{}", USAGE.trim());
     process::exit(1);
 }

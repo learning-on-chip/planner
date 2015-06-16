@@ -3,21 +3,9 @@ use std::io::Write;
 use Result;
 use layout::Component;
 
-pub trait Format {
-    fn print(&self, component: &[Component], writer: &mut Write) -> Result<()>;
-}
-
 pub struct SVG;
-pub struct ThreeDICE;
 
-impl SVG {
-    #[inline]
-    pub fn new() -> SVG {
-        SVG
-    }
-}
-
-impl Format for SVG {
+impl super::Format for SVG {
     fn print(&self, components: &[Component], writer: &mut Write) -> Result<()> {
         use std::f64::{INFINITY, NEG_INFINITY};
 
@@ -77,34 +65,6 @@ r#"<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="{width:.0}" heig
                                      height = height + 2.0 * MARGIN,
                                      body = body.trim()).as_bytes()));
 
-        Ok(())
-    }
-}
-
-impl ThreeDICE {
-    #[inline]
-    pub fn new() -> ThreeDICE {
-        ThreeDICE
-    }
-}
-
-impl Format for ThreeDICE {
-    fn print(&self, components: &[Component], writer: &mut Write) -> Result<()> {
-        let mut first = true;
-        for &Component { ref name, position: (x, y), dimension: (width, height) } in components {
-            if !first {
-                ok!(writer.write(b"\n"));
-            } else {
-                first = false;
-            }
-            ok!(writer.write_all(format!(
-"{}:
-  position {:.0}, {:.0};
-  dimension {:.0}, {:.0};
-
-  power: values 0;
-", name, x * 1e6, y * 1e6, width * 1e6, height * 1e6).as_bytes()));
-        }
         Ok(())
     }
 }
