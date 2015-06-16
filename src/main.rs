@@ -19,6 +19,7 @@ Options:
     --database PATH          SQLite3 database (required).
     --table    NAME          Table to look for area measurements (required).
     --cores    NUMBER        Number of cores (required).
+    --format   NAME          Output format (default svg).
 
     --help                   Display this message.
 ";
@@ -38,10 +39,6 @@ macro_rules! raise(
     ($error:expr) => (return Err(Box::new($error)));
 );
 
-macro_rules! usage(
-    () => (usage());
-);
-
 mod format;
 mod layout;
 
@@ -57,19 +54,23 @@ fn start() -> Result<()> {
 
     let arguments = ok!(arguments::parse(env::args()));
 
-    let core_count = match arguments.get::<usize>("cores") {
-        Some(core_count) => core_count,
-        _ => usage!(),
-    };
+    if arguments.get::<bool>("help").unwrap_or(false) {
+        usage();
+    }
+
     let database = match arguments.get::<String>("database") {
         Some(ref database) => ok!(sqlite::open(&Path::new(database))),
-        _ => usage!(),
+        _ => raise!("a database filename is required"),
     };
     let (core_area, l3_area) = match arguments.get::<String>("table") {
         Some(ref table) => {
             (ok!(find(&database, table, CORE_LIKE)), ok!(find(&database, table, L3_LIKE)))
         },
-        _ => usage!(),
+        _ => raise!("a table name is required"),
+    };
+    let core_count = match arguments.get::<usize>("cores") {
+        Some(core_count) => core_count,
+        _ => raise!("the number of cores is required"),
     };
 
     let spec = layout::Spec {
@@ -79,9 +80,13 @@ fn start() -> Result<()> {
     };
 
     let layout = layout::Tiles::new();
-    let format = format::ThreeDICE::new();
+    let format = match &arguments.get::<String>("format").unwrap_or("svg".to_string())[..] {
+        "svg" => Box::new(format::SVG::new()) as Box<Format>,
+        "3d-ice" => Box::new(format::ThreeDICE::new()) as Box<Format>,
+        _ => raise!("the output format is unknown"),
+    };
 
-    format.print(&ok!(layout.construct(&spec)), io::stdout())
+    format.print(&ok!(layout.construct(&spec)), &mut io::stdout())
 }
 
 fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
