@@ -27,11 +27,11 @@ impl Format for ThreeDICE {
             }
             ok!(writer.write_all(format!(
 "{}:
-  position {}, {};
-  dimension {}, {};
+  position {:.0}, {:.0};
+  dimension {:.0}, {:.0};
 
-  power: values 0.0;
-", name, x, y, width, height).as_bytes()));
+  power: values 0;
+", name, x * 1e6, y * 1e6, width * 1e6, height * 1e6).as_bytes()));
         }
         Ok(())
     }
