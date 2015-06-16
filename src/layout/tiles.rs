@@ -1,4 +1,5 @@
 use Result;
+use super::{Component, Layout, Spec};
 
 const CORE_LABEL: &'static str = "Core";
 const L3_LABEL: &'static str = "L3";
@@ -6,30 +7,7 @@ const L3_LABEL: &'static str = "L3";
 const CORE_WIDTH_HEIGHT_RATIO: f64 = 0.5;
 const CORES_PER_ROW: usize = 4;
 
-pub trait Layout {
-    fn construct(&self, spec: &Spec) -> Result<Vec<Component>>;
-}
-
-pub struct Spec {
-    pub core_count: usize,
-    pub core_area: f64,
-    pub l3_area: f64,
-}
-
-pub struct Component {
-    pub name: String,
-    pub position: (f64, f64),
-    pub dimension: (f64, f64),
-}
-
 pub struct Tiles;
-
-impl Tiles {
-    #[inline]
-    pub fn new() -> Tiles {
-        Tiles
-    }
-}
 
 impl Layout for Tiles {
     fn construct(&self, &Spec { core_count, core_area, l3_area }: &Spec)

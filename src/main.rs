@@ -79,7 +79,7 @@ fn start() -> Result<()> {
         l3_area: l3_area,
     };
 
-    let layout = layout::Tiles::new();
+    let layout = layout::Tiles;
     let format = match &arguments.get::<String>("format").unwrap_or("3d-ice".to_string())[..] {
         "svg" => Box::new(format::SVG) as Box<Format>,
         "3d-ice" => Box::new(format::ThreeDICE) as Box<Format>,
