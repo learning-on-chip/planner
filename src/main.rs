@@ -69,8 +69,8 @@ fn start() -> Result<()> {
         _ => raise!("a table name is required"),
     };
     let core_count = match arguments.get::<usize>("cores") {
-        Some(core_count) => core_count,
-        _ => raise!("the number of cores is required"),
+        Some(core_count) if core_count > 0 => core_count,
+        _ => raise!("the number of cores is required and should be positive"),
     };
 
     let spec = layout::Spec {

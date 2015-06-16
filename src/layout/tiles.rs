@@ -13,6 +13,10 @@ impl Layout for Tiles {
     fn construct(&self, &Spec { core_count, core_area, l3_area }: &Spec)
                  -> Result<Vec<Component>> {
 
+        if core_count % 4 != 0 {
+            raise!("the number of cores should be a multiple of four");
+        }
+
         let core_width = (core_area * CORE_WIDTH_HEIGHT_RATIO).sqrt();
         let core_height = core_area / core_width;
 
@@ -23,22 +27,31 @@ impl Layout for Tiles {
         let mut components = Vec::new();
         for k in 0..core_count {
             let i = k % CORES_PER_ROW;
+            let j = k / CORES_PER_ROW;
+            if i == 0 && j % 2 == 1 {
+                components.push(Component {
+                    name: format!("{}{}", L3_LABEL, j),
+                    position: (0.0, offset),
+                    dimension: (l3_width, l3_height),
+                });
+                offset += l3_height;
+            }
             components.push(Component {
                 name: format!("{}{}", CORE_LABEL, k),
                 position: ((i as f64) * core_width, offset),
                 dimension: (core_width, core_height),
             });
-            if i != CORES_PER_ROW - 1 {
-                continue;
+            if i == CORES_PER_ROW - 1 {
+                offset += core_height;
             }
-            let i = k / CORES_PER_ROW;
-            offset += core_height;
-            components.push(Component {
-                name: format!("{}{}", L3_LABEL, i),
-                position: (0.0, offset),
-                dimension: (l3_width, l3_height),
-            });
-            offset += l3_height;
+            if i == CORES_PER_ROW - 1 && j % 2 == 0 {
+                components.push(Component {
+                    name: format!("{}{}", L3_LABEL, j),
+                    position: (0.0, offset),
+                    dimension: (l3_width, l3_height),
+                });
+                offset += l3_height;
+            }
         }
         Ok(components)
     }
