@@ -55,7 +55,13 @@ fn start() -> Result<()> {
     }
 
     let database = match arguments.get::<String>("database") {
-        Some(ref database) => ok!(sqlite::open(&Path::new(database))),
+        Some(ref database) => {
+            let path = Path::new(database);
+            if std::fs::metadata(path).is_err() {
+                raise!("the database does not exist");
+            }
+            ok!(sqlite::open(path))
+        },
         _ => raise!("a database filename is required"),
     };
     let (core_area, l3_area) = match arguments.get::<String>("table") {
@@ -96,13 +102,13 @@ fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
     })
 }
 
+fn help() -> ! {
+    println!("{}", USAGE.trim());
+    std::process::exit(0);
+}
+
 fn fail(error: Error) -> ! {
     use std::io::{stderr, Write};
     stderr().write_all(format!("Error: {}.\n", &*error).as_bytes()).unwrap();
     std::process::exit(1);
-}
-
-fn help() -> ! {
-    println!("{}", USAGE.trim());
-    std::process::exit(0);
 }
