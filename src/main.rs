@@ -51,7 +51,7 @@ fn start() -> Result<()> {
     let arguments = ok!(arguments::parse(std::env::args()));
 
     if arguments.get::<bool>("help").unwrap_or(false) {
-        usage();
+        help();
     }
 
     let database = match arguments.get::<String>("database") {
@@ -102,7 +102,7 @@ fn fail(error: Error) -> ! {
     std::process::exit(1);
 }
 
-fn usage() -> ! {
+fn help() -> ! {
     println!("{}", USAGE.trim());
     std::process::exit(0);
 }
