@@ -4,10 +4,8 @@ extern crate arguments;
 extern crate sqlite;
 
 use sqlite::Database;
-use std::io;
 use std::fmt::Display;
 use std::path::Path;
-use std::{env, process};
 
 const CORE_LIKE: &'static str = "core%_area";
 const L3_LIKE: &'static str = "l3%_area";
@@ -24,10 +22,6 @@ Options:
     --help                   Display this message.
 ";
 
-macro_rules! die(
-    ($($arg:tt)*) => (raise!(format!($($arg)*)));
-);
-
 macro_rules! ok(
     ($result:expr) => (match $result {
         Ok(result) => result,
@@ -37,22 +31,24 @@ macro_rules! ok(
 
 macro_rules! raise(
     ($error:expr) => (return Err(Box::new($error)));
+    ($($arg:tt)*) => (raise!(format!($($arg)*)));
 );
 
 mod format;
 mod layout;
 
-pub type Result<T> = std::result::Result<T, Box<Display>>;
+pub type Error = Box<Display>;
+pub type Result<T> = std::result::Result<T, Error>;
 
 fn main() {
-    start().unwrap_or_else(|error| fail(&*error));
+    start().unwrap_or_else(|error| fail(error));
 }
 
 fn start() -> Result<()> {
     use format::Format;
     use layout::Layout;
 
-    let arguments = ok!(arguments::parse(env::args()));
+    let arguments = ok!(arguments::parse(std::env::args()));
 
     if arguments.get::<bool>("help").unwrap_or(false) {
         usage();
@@ -86,7 +82,7 @@ fn start() -> Result<()> {
         _ => raise!("the output format is unknown"),
     };
 
-    format.print(&ok!(layout.construct(&spec)), &mut io::stdout())
+    format.print(&ok!(layout.construct(&spec)), &mut std::io::stdout())
 }
 
 fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
@@ -100,18 +96,13 @@ fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
     })
 }
 
-#[allow(unused_must_use)]
-fn fail<E: Display>(error: E) -> ! {
-    use std::io::Write;
-    let message = format!("Error: {}.\n", error);
-    io::stderr().write_all(message.as_bytes());
-    if message.contains("required") {
-        io::stderr().write_all(format!("\n{}\n", USAGE.trim()).as_bytes());
-    }
-    process::exit(1);
+fn fail(error: Error) -> ! {
+    use std::io::{stderr, Write};
+    stderr().write_all(format!("Error: {}.\n", &*error).as_bytes()).unwrap();
+    std::process::exit(1);
 }
 
 fn usage() -> ! {
     println!("{}", USAGE.trim());
-    process::exit(1);
+    std::process::exit(0);
 }

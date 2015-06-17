@@ -14,7 +14,7 @@ impl Layout for Tiles {
                  -> Result<Vec<Component>> {
 
         if core_count % CORES_PER_L3 != 0 {
-            die!("the number of cores should be a multiple of {}", CORES_PER_L3);
+            raise!("the number of cores should be a multiple of {}", CORES_PER_L3);
         }
 
         let core_width = (core_area * CORE_WIDTH_HEIGHT_RATIO).sqrt();
