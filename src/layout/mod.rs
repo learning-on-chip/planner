@@ -1,7 +1,7 @@
 use Result;
 
 pub trait Layout {
-    fn construct(&self, spec: &Spec) -> Result<Vec<Component>>;
+    fn construct(&self, &Spec) -> Result<Vec<Component>>;
 }
 
 pub struct Spec {

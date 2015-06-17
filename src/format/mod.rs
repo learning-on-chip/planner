@@ -4,7 +4,7 @@ use Result;
 use layout::Component;
 
 pub trait Format {
-    fn print(&self, component: &[Component], writer: &mut Write) -> Result<()>;
+    fn print(&self, &[Component], &mut Write) -> Result<()>;
 }
 
 mod svg;
