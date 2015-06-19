@@ -97,7 +97,7 @@ fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
         "SELECT name, value FROM `{}` WHERE name LIKE '{}' LIMIT 1;", table, like,
     )));
     Ok(match ok!(statement.step()) {
-        State::Row => ok!(statement.column::<f64>(0 + 1)),
+        State::Row => ok!(statement.read::<f64>(0 + 1)),
         _ => raise!("failed to find a required value in the table"),
     })
 }
