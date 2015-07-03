@@ -7,9 +7,6 @@ use sqlite::Database;
 use std::fmt::Display;
 use std::path::Path;
 
-const CORE_LIKE: &'static str = "core%_area";
-const L3_LIKE: &'static str = "l3%_area";
-
 const USAGE: &'static str = "
 Usage: planner [options]
 
@@ -66,7 +63,7 @@ fn start() -> Result<()> {
     };
     let (core_area, l3_area) = match arguments.get::<String>("table") {
         Some(ref table) => {
-            (ok!(find(&database, table, CORE_LIKE)), ok!(find(&database, table, L3_LIKE)))
+            (ok!(find(&database, table, "core%")), ok!(find(&database, table, "l3%")))
         },
         _ => raise!("a table name is required"),
     };
@@ -94,7 +91,7 @@ fn start() -> Result<()> {
 fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
     use sqlite::State;
     let mut statement = ok!(database.prepare(&format!(
-        "SELECT name, value FROM `{}` WHERE name LIKE '{}' LIMIT 1;", table, like,
+        "SELECT `name`, `area` FROM `{}` WHERE `name` LIKE '{}' LIMIT 1;", table, like,
     )));
     Ok(match ok!(statement.step()) {
         State::Row => ok!(statement.read::<f64>(0 + 1)),
