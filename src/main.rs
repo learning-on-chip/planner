@@ -5,7 +5,6 @@ extern crate sqlite;
 
 use sqlite::Database;
 use std::fmt::Display;
-use std::path::Path;
 
 const USAGE: &'static str = "
 Usage: planner [options]
@@ -53,11 +52,10 @@ fn start() -> Result<()> {
 
     let database = match arguments.get::<String>("database") {
         Some(ref database) => {
-            let path = Path::new(database);
-            if std::fs::metadata(path).is_err() {
+            if std::fs::metadata(database).is_err() {
                 raise!("the database does not exist");
             }
-            ok!(sqlite::open(path))
+            ok!(sqlite::open(database))
         },
         _ => raise!("a database filename is required"),
     };
