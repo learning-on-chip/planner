@@ -3,7 +3,7 @@
 extern crate arguments;
 extern crate sqlite;
 
-use sqlite::Database;
+use sqlite::Connection;
 use std::fmt::Display;
 
 const USAGE: &'static str = "
@@ -50,7 +50,7 @@ fn start() -> Result<()> {
         help();
     }
 
-    let database = match arguments.get::<String>("database") {
+    let backend = match arguments.get::<String>("database") {
         Some(ref database) => {
             if std::fs::metadata(database).is_err() {
                 raise!("the database does not exist");
@@ -61,7 +61,7 @@ fn start() -> Result<()> {
     };
     let (core_area, l3_area) = match arguments.get::<String>("table") {
         Some(ref table) => {
-            (ok!(find(&database, table, "core%")), ok!(find(&database, table, "l3%")))
+            (ok!(find(&backend, table, "core%")), ok!(find(&backend, table, "l3%")))
         },
         _ => raise!("a table name is required"),
     };
@@ -86,9 +86,9 @@ fn start() -> Result<()> {
     format.print(&ok!(layout.construct(&spec)), &mut std::io::stdout())
 }
 
-fn find(database: &Database, table: &str, like: &str) -> Result<f64> {
+fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
     use sqlite::State;
-    let mut statement = ok!(database.prepare(&format!(
+    let mut statement = ok!(backend.prepare(&format!(
         "SELECT `name`, `area` FROM `{}` WHERE `name` LIKE '{}' LIMIT 1;", table, like,
     )));
     Ok(match ok!(statement.step()) {
