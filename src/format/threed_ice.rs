@@ -19,7 +19,7 @@ impl super::Format for ThreeDICE {
   position {:.0}, {:.0};
   dimension {:.0}, {:.0};
 
-  power: values 0;
+  power values 0;
 ", name, x * 1e6, y * 1e6, width * 1e6, height * 1e6).as_bytes()));
         }
         Ok(())
