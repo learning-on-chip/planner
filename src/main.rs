@@ -77,7 +77,7 @@ fn start() -> Result<()> {
     };
 
     let layout = layout::Tiles;
-    let format = match &arguments.get::<String>("format").unwrap_or("3d-ice".to_string())[..] {
+    let format = match &*arguments.get::<String>("format").unwrap_or("3d-ice".to_string()) {
         "svg" => Box::new(format::SVG) as Box<Format>,
         "3d-ice" => Box::new(format::ThreeDICE) as Box<Format>,
         _ => raise!("the output format is unknown"),
