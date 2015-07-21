@@ -4,8 +4,9 @@ use super::{Component, Layout, Spec};
 const CORE_LABEL: &'static str = "Core";
 const L3_LABEL: &'static str = "L3";
 
-const CORE_WIDTH_HEIGHT_RATIO: f64 = 0.5;
 const CORES_PER_L3: usize = 4;
+const CORE_WIDTH_HEIGHT_RATIO: f64 = 0.5;
+const SIZE_RESOLUTION: f64 = 1e6;
 
 pub struct Tiles;
 
@@ -13,15 +14,23 @@ impl Layout for Tiles {
     fn construct(&self, &Spec { core_count, core_area, l3_area }: &Spec)
                  -> Result<Vec<Component>> {
 
+        macro_rules! round(
+            ($size:expr) => ({
+                let mut size = (SIZE_RESOLUTION * $size).round() as usize;
+                size += size % 2;
+                (size as f64) / SIZE_RESOLUTION
+            });
+        );
+
         if core_count % CORES_PER_L3 != 0 {
             raise!("the number of cores should be a multiple of {}", CORES_PER_L3);
         }
 
-        let core_width = (core_area * CORE_WIDTH_HEIGHT_RATIO).sqrt();
-        let core_height = core_area / core_width;
+        let core_width = round!((core_area * CORE_WIDTH_HEIGHT_RATIO).sqrt());
+        let core_height = round!(core_area / core_width);
 
-        let l3_width = (CORES_PER_L3 as f64) * core_width;
-        let l3_height = l3_area / l3_width;
+        let l3_width = round!((CORES_PER_L3 as f64) * core_width);
+        let l3_height = round!(l3_area / l3_width);
 
         let mut components = Vec::new();
         for k in 0..core_count {
