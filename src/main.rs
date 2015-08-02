@@ -90,7 +90,7 @@ fn start() -> Result<()> {
 fn find(backend: &Database<sqlite::Driver>, table: &str, like: &str) -> Result<f64> {
     use database::prelude::*;
 
-    let statement = select().table(table).column("area")
+    let statement = select().table(table).column("name").column("area")
                             .wherein(column().name("name").like(like)).limit(1);
 
     let mut statement = ok!(backend.prepare(statement));
