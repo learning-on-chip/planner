@@ -3,6 +3,11 @@ name = "planner"
 version = "0.0.1"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 
+[[bin]]
+name = "planner"
+path = "src/main.rs"
+test = false
+
 [dependencies]
 arguments = "*"
 database = "*"
