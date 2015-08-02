@@ -5,4 +5,4 @@ authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 
 [dependencies]
 arguments = "*"
-sqlite = "*"
+database = "*"
