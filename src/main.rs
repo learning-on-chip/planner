@@ -89,14 +89,13 @@ fn start() -> Result<()> {
 
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
     use sql::prelude::*;
-    use sqlite::Value;
 
     let statement = select().column("name").column("area").table(table)
                             .wherein(column().name("name").like(like)).limit(1);
 
     let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
     if let Some(row) = ok!(cursor.next()) {
-        if let &Value::Float(value) = &row[1] {
+        if let Some(value) = row[1].as_float() {
             return Ok(value);
         }
     }
