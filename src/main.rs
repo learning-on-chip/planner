@@ -90,8 +90,8 @@ fn start() -> Result<()> {
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
     use sql::prelude::*;
 
-    let statement = select().column("name").column("area").table(table)
-                            .wherein(column().name("name").like(like)).limit(1);
+    let statement = select_from(table).columns(&["name", "area"])
+                                      .wherein(column("name").like(like)).limit(1);
 
     let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
     if let Some(row) = ok!(cursor.next()) {
