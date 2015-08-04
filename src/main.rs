@@ -1,6 +1,7 @@
 #![cfg_attr(test, allow(dead_code))]
 
 extern crate arguments;
+extern crate sql;
 extern crate sqlite;
 
 use sqlite::Connection;
@@ -87,14 +88,20 @@ fn start() -> Result<()> {
 }
 
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
-    use sqlite::State;
-    let mut statement = ok!(backend.prepare(&format!(
-        "SELECT `name`, `area` FROM `{}` WHERE `name` LIKE '{}' LIMIT 1;", table, like,
-    )));
-    Ok(match ok!(statement.next()) {
-        State::Row => ok!(statement.read::<f64>(0 + 1)),
-        _ => raise!("failed to find a required value in the table"),
-    })
+    use sql::prelude::*;
+    use sqlite::Value;
+
+    let statement = select().column("name").column("area").table(table)
+                            .wherein(column().name("name").like(like)).limit(1);
+
+    let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
+    if let Some(record) = ok!(cursor.next()) {
+        if let &Value::Float(value) = &record[1] {
+            return Ok(value);
+        }
+    }
+
+    raise!("failed to find a required value in the table");
 }
 
 fn help() -> ! {
