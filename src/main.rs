@@ -95,8 +95,8 @@ fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
                             .wherein(column().name("name").like(like)).limit(1);
 
     let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
-    if let Some(record) = ok!(cursor.next()) {
-        if let &Value::Float(value) = &record[1] {
+    if let Some(row) = ok!(cursor.next()) {
+        if let &Value::Float(value) = &row[1] {
             return Ok(value);
         }
     }
