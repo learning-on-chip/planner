@@ -1,8 +1,9 @@
-extern crate arguments;
-extern crate database;
+#![cfg_attr(test, allow(dead_code))]
 
-use database::Database;
-use database::driver::sqlite;
+extern crate arguments;
+extern crate sqlite;
+
+use sqlite::Connection;
 use std::fmt::Display;
 
 const USAGE: &'static str = "
@@ -54,7 +55,7 @@ fn start() -> Result<()> {
             if std::fs::metadata(database).is_err() {
                 raise!("the database does not exist");
             }
-            ok!(Database::open(database))
+            ok!(sqlite::open(database))
         },
         _ => raise!("a database filename is required"),
     };
@@ -85,22 +86,15 @@ fn start() -> Result<()> {
     format.print(&ok!(layout.construct(&spec)), &mut std::io::stdout())
 }
 
-fn find(backend: &Database<sqlite::Driver>, table: &str, like: &str) -> Result<f64> {
-    use database::prelude::*;
-
-    let statement = select().table(table).column("name").column("area")
-                            .wherein(column().name("name").like(like)).limit(1);
-
-    let mut statement = ok!(backend.prepare(statement));
-    ok!(statement.execute(&[]));
-
-    if let Some(record) = ok!(statement.next()) {
-        if let Some(&Value::Float(value)) = record.get(1) {
-            return Ok(value);
-        }
-    }
-
-    raise!("failed to find a required value in the table");
+fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
+    use sqlite::State;
+    let mut statement = ok!(backend.prepare(&format!(
+        "SELECT `name`, `area` FROM `{}` WHERE `name` LIKE '{}' LIMIT 1;", table, like,
+    )));
+    Ok(match ok!(statement.next()) {
+        State::Row => ok!(statement.read::<f64>(0 + 1)),
+        _ => raise!("failed to find a required value in the table"),
+    })
 }
 
 fn help() -> ! {
