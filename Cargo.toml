@@ -5,5 +5,5 @@ authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 
 [dependencies]
 arguments = "*"
-sql = { git = "https://github.com/stainless-steel/sql.git" }
+sql = "*"
 sqlite = "*"

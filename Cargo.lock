@@ -3,7 +3,7 @@ name = "planner"
 version = "0.0.1"
 dependencies = [
  "arguments 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "sql 0.0.1 (git+https://github.com/stainless-steel/sql.git)",
+ "sql 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sqlite 0.19.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -32,8 +32,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "sql"
-version = "0.0.1"
-source = "git+https://github.com/stainless-steel/sql.git#3873a0d8e1404da39ec0a39c55d8c2bef6dc909a"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "sqlite"

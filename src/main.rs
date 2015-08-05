@@ -71,11 +71,7 @@ fn start() -> Result<()> {
         _ => raise!("a number of cores is required"),
     };
 
-    let spec = layout::Spec {
-        core_count: core_count,
-        core_area: core_area,
-        l3_area: l3_area,
-    };
+    let spec = layout::Spec { core_count: core_count, core_area: core_area, l3_area: l3_area };
 
     let layout = layout::Tiles;
     let format = match &*arguments.get::<String>("format").unwrap_or("3d-ice".to_string()) {
@@ -91,7 +87,7 @@ fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
     use sql::prelude::*;
 
     let statement = select_from(table).columns(&["name", "area"])
-                                      .wherein(column("name").like(like)).limit(1);
+                                      .so_that(column("name").like(like)).limit(1);
 
     let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
     if let Some(row) = ok!(cursor.next()) {
