@@ -2,6 +2,8 @@
 name = "planner"
 version = "0.0.1"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
+description = """
+Planner is a tool for constructing floorplans of multiprocessor systems."""
 
 [dependencies]
 arguments = "*"
