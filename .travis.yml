@@ -5,5 +5,8 @@ rust:
   - beta
   - nightly
 
+script:
+  - cargo run -- --database tests/fixtures/blackscholes.sqlite3 --table static --cores 4
+
 notifications:
   email: false
