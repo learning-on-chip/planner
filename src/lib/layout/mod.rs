@@ -1,10 +1,10 @@
 use Result;
 
 pub trait Layout {
-    fn construct(&self, &Spec) -> Result<Vec<Component>>;
+    fn construct(&self, &Config) -> Result<Vec<Component>>;
 }
 
-pub struct Spec {
+pub struct Config {
     pub core_count: usize,
     pub core_area: f64,
     pub l3_area: f64,

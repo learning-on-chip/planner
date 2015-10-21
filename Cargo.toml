@@ -8,12 +8,18 @@ homepage = "https://github.com/learning-on-chip/planner"
 description = """
 Planner is a tool for constructing floorplans of multiprocessor systems."""
 
+[lib]
+name = "planner"
+path = "src/lib/planner.rs"
+
 [[bin]]
 name = "planner"
-path = "src/main.rs"
+path = "src/bin/planner.rs"
 test = false
+doc = false
 
 [dependencies]
 arguments = "*"
 sql = "*"
 sqlite = "*"
+term = "*"

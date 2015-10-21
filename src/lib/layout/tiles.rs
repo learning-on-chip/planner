@@ -1,5 +1,5 @@
 use Result;
-use super::{Component, Layout, Spec};
+use super::{Component, Config, Layout};
 
 const CORE_LABEL: &'static str = "Core";
 const L3_LABEL: &'static str = "L3";
@@ -11,7 +11,7 @@ const SIZE_RESOLUTION: f64 = 1e6;
 pub struct Tiles;
 
 impl Layout for Tiles {
-    fn construct(&self, &Spec { core_count, core_area, l3_area }: &Spec)
+    fn construct(&self, &Config { core_count, core_area, l3_area }: &Config)
                  -> Result<Vec<Component>> {
 
         macro_rules! round(

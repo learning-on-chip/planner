@@ -1,9 +1,15 @@
 extern crate arguments;
 extern crate sql;
 extern crate sqlite;
+extern crate term;
 
+#[macro_use]
+extern crate planner;
+
+use planner::format::{self, Format};
+use planner::layout::{self, Layout};
+use planner::{Error, Result};
 use sqlite::Connection;
-use std::fmt::Display;
 
 const USAGE: &'static str = "
 Usage: planner [options]
@@ -17,34 +23,12 @@ Options:
     --help                   Display this message.
 ";
 
-macro_rules! ok(
-    ($result:expr) => (match $result {
-        Ok(result) => result,
-        Err(error) => raise!(error),
-    });
-);
-
-macro_rules! raise(
-    ($error:expr) => (return Err(Box::new($error)));
-    ($($arg:tt)*) => (raise!(format!($($arg)*)));
-);
-
-mod format;
-mod layout;
-
-pub type Error = Box<Display>;
-pub type Result<T> = std::result::Result<T, Error>;
-
 fn main() {
     start().unwrap_or_else(|error| fail(error));
 }
 
 fn start() -> Result<()> {
-    use format::Format;
-    use layout::Layout;
-
     let arguments = ok!(arguments::parse(std::env::args()));
-
     if arguments.get::<bool>("help").unwrap_or(false) {
         help();
     }
@@ -69,7 +53,7 @@ fn start() -> Result<()> {
         _ => raise!("a number of cores is required"),
     };
 
-    let spec = layout::Spec { core_count: core_count, core_area: core_area, l3_area: l3_area };
+    let config = layout::Config { core_count: core_count, core_area: core_area, l3_area: l3_area };
 
     let layout = layout::Tiles;
     let format = match &*arguments.get::<String>("format").unwrap_or("3d-ice".to_string()) {
@@ -78,7 +62,7 @@ fn start() -> Result<()> {
         _ => raise!("the output format is unknown"),
     };
 
-    format.print(&ok!(layout.construct(&spec)), &mut std::io::stdout())
+    format.print(&ok!(layout.construct(&config)), &mut std::io::stdout())
 }
 
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
@@ -86,14 +70,12 @@ fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
 
     let statement = select_from(table).columns(&["name", "area"])
                                       .so_that(column("name").like(like)).limit(1);
-
     let mut cursor = ok!(backend.prepare(ok!(statement.compile()))).cursor();
     if let Some(row) = ok!(cursor.next()) {
         if let Some(value) = row[1].as_float() {
             return Ok(value);
         }
     }
-
     raise!("failed to find a required value in the table");
 }
 
@@ -102,8 +84,12 @@ fn help() -> ! {
     std::process::exit(0);
 }
 
+#[allow(unused_must_use)]
 fn fail(error: Error) -> ! {
     use std::io::{stderr, Write};
-    stderr().write_all(format!("Error: {}.\n", &*error).as_bytes()).unwrap();
+    if let Some(mut output) = term::stderr() {
+        output.fg(term::color::RED);
+        output.write_all(format!("Error: {}.\n", error).as_bytes());
+    }
     std::process::exit(1);
 }
