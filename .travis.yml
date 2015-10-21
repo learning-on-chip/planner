@@ -6,7 +6,6 @@ rust:
   - nightly
 
 script:
-  - cargo test
   - cargo run -- --database tests/fixtures/blackscholes.sqlite3 --table static --cores 4
 
 notifications:

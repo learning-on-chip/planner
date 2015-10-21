@@ -1,5 +1,3 @@
-#![cfg_attr(test, allow(dead_code))]
-
 extern crate arguments;
 extern crate sql;
 extern crate sqlite;
