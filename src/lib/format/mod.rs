@@ -1,10 +1,14 @@
+//! Output formats.
+
 use std::io::Write;
 
 use Result;
 use layout::Component;
 
+/// A output format.
 pub trait Format {
-    fn print(&self, &[Component], &mut Write) -> Result<()>;
+    /// Perform the formatting.
+    fn write(&self, &[Component], &mut Write) -> Result<()>;
 }
 
 mod svg;

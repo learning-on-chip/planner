@@ -3,10 +3,11 @@ use std::io::Write;
 use Result;
 use layout::Component;
 
+/// The SVG format.
 pub struct SVG;
 
 impl super::Format for SVG {
-    fn print(&self, components: &[Component], writer: &mut Write) -> Result<()> {
+    fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
         use std::f64::{INFINITY, NEG_INFINITY};
 
         let (mut min_x, mut min_y) = (INFINITY, INFINITY);

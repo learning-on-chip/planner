@@ -1,3 +1,5 @@
+//! Construction of floorplans.
+
 /// Raise an error.
 #[macro_export]
 macro_rules! raise(

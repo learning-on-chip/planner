@@ -1,6 +1,6 @@
 # Planner [![Status][status-img]][status-url]
 
-Planner is a tool for constructing floorplans of multiprocessor systems.
+Planner is a tool for constructing floorplans.
 
 ## Usage
 

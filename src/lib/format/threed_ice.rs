@@ -3,10 +3,11 @@ use std::io::Write;
 use Result;
 use layout::Component;
 
+/// The 3D-ICE format.
 pub struct ThreeDICE;
 
 impl super::Format for ThreeDICE {
-    fn print(&self, components: &[Component], writer: &mut Write) -> Result<()> {
+    fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
         let mut first = true;
         for &Component { ref name, position: (x, y), dimension: (width, height) } in components {
             if !first {

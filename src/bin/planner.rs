@@ -53,7 +53,11 @@ fn start() -> Result<()> {
         _ => raise!("a number of cores is required"),
     };
 
-    let config = layout::Config { core_count: core_count, core_area: core_area, l3_area: l3_area };
+    let config = layout::Configuration {
+        core_count: core_count,
+        core_area: core_area,
+        l3_area: l3_area,
+    };
 
     let layout = layout::Tiles;
     let format = match &*arguments.get::<String>("format").unwrap_or("3d-ice".to_string()) {
@@ -62,7 +66,7 @@ fn start() -> Result<()> {
         _ => raise!("the output format is unknown"),
     };
 
-    format.print(&ok!(layout.construct(&config)), &mut std::io::stdout())
+    format.write(&ok!(layout.construct(&config)), &mut std::io::stdout())
 }
 
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {

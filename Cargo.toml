@@ -5,8 +5,7 @@ authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/learning-on-chip/planner"
 homepage = "https://github.com/learning-on-chip/planner"
-description = """
-Planner is a tool for constructing floorplans of multiprocessor systems."""
+description = "Planner is a tool for constructing floorplans."
 
 [lib]
 name = "planner"

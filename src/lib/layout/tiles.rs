@@ -1,5 +1,5 @@
 use Result;
-use super::{Component, Config, Layout};
+use super::{Component, Configuration, Layout};
 
 const CORE_LABEL: &'static str = "Core";
 const L3_LABEL: &'static str = "L3";
@@ -8,10 +8,11 @@ const CORES_PER_L3: usize = 4;
 const CORE_WIDTH_HEIGHT_RATIO: f64 = 0.5;
 const SIZE_RESOLUTION: f64 = 1e6;
 
+/// A layout strategy that builds a road of L3 caches with sidewalks of cores.
 pub struct Tiles;
 
 impl Layout for Tiles {
-    fn construct(&self, &Config { core_count, core_area, l3_area }: &Config)
+    fn construct(&self, &Configuration { core_count, core_area, l3_area }: &Configuration)
                  -> Result<Vec<Component>> {
 
         macro_rules! round(
