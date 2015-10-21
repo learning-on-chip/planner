@@ -20,7 +20,7 @@ macro_rules! ok(
 
 mod result;
 
-pub mod format;
 pub mod layout;
+pub mod output;
 
 pub use result::{Error, Result};

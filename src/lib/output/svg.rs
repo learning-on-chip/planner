@@ -6,7 +6,7 @@ use layout::Component;
 /// The SVG format.
 pub struct SVG;
 
-impl super::Format for SVG {
+impl super::Output for SVG {
     fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
         use std::f64::{INFINITY, NEG_INFINITY};
 

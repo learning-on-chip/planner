@@ -6,7 +6,7 @@ use Result;
 use layout::Component;
 
 /// A output format.
-pub trait Format {
+pub trait Output {
     /// Perform the formatting.
     fn write(&self, &[Component], &mut Write) -> Result<()>;
 }

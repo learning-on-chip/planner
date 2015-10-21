@@ -6,7 +6,7 @@ use layout::Component;
 /// The 3D-ICE format.
 pub struct ThreeDICE;
 
-impl super::Format for ThreeDICE {
+impl super::Output for ThreeDICE {
     fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
         let mut first = true;
         for &Component { ref name, position: (x, y), dimension: (width, height) } in components {
