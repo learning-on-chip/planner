@@ -1,12 +1,12 @@
-//! Output formats.
+//! Formatting strategies.
 
 use std::io::Write;
 
 use Result;
 use layout::Component;
 
-/// A output format.
-pub trait Output {
+/// A formating strategy.
+pub trait Format {
     /// Perform the formatting.
     fn write(&self, &[Component], &mut Write) -> Result<()>;
 }

@@ -6,8 +6,8 @@ extern crate term;
 #[macro_use]
 extern crate planner;
 
+use planner::format::{self, Format};
 use planner::layout::{self, Layout};
-use planner::output::{self, Output};
 use planner::{Error, Result};
 use sqlite::Connection;
 
@@ -18,7 +18,7 @@ Options:
     --database <path>        SQLite3 database (required).
     --table <name>           Table containing area estimates (required).
     --cores <number>         Number of cores (required).
-    --output (3d-ice|svg)    Output format [default: 3d-ice].
+    --format (3d-ice|svg)    Output format [default: 3d-ice].
 
     --help                   Display this message.
 ";
@@ -60,13 +60,13 @@ fn start() -> Result<()> {
     };
 
     let layout = layout::Tiles;
-    let output = match &*arguments.get::<String>("output").unwrap_or("3d-ice".to_string()) {
-        "svg" => Box::new(output::SVG) as Box<Output>,
-        "3d-ice" => Box::new(output::ThreeDICE) as Box<Output>,
+    let format = match &*arguments.get::<String>("format").unwrap_or("3d-ice".to_string()) {
+        "svg" => Box::new(format::SVG) as Box<Format>,
+        "3d-ice" => Box::new(format::ThreeDICE) as Box<Format>,
         _ => raise!("the output format is unknown"),
     };
 
-    output.write(&ok!(layout.construct(&config)), &mut std::io::stdout())
+    format.write(&ok!(layout.construct(&config)), &mut std::io::stdout())
 }
 
 fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
