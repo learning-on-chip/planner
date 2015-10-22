@@ -2,6 +2,8 @@
 
 Planner is a tool for constructing floorplans.
 
+## [Documentation][doc]
+
 ## Usage
 
 ```
@@ -25,3 +27,4 @@ Options:
 
 [status-img]: https://travis-ci.org/learning-on-chip/planner.svg?branch=master
 [status-url]: https://travis-ci.org/learning-on-chip/planner
+[doc]: https://learning-on-chip.github.io/planner
