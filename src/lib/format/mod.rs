@@ -3,12 +3,12 @@
 use std::io::Write;
 
 use Result;
-use layout::Component;
+use layout::Element;
 
 /// A formating strategy.
 pub trait Format {
     /// Perform the formatting.
-    fn write(&self, &[Component], &mut Write) -> Result<()>;
+    fn write(&self, &[Element], &mut Write) -> Result<()>;
 }
 
 mod svg;

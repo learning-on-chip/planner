@@ -1,18 +1,18 @@
 use std::io::Write;
 
 use Result;
-use layout::Component;
+use layout::Element;
 
 /// The SVG format.
 pub struct SVG;
 
 impl super::Format for SVG {
-    fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
+    fn write(&self, elements: &[Element], writer: &mut Write) -> Result<()> {
         use std::f64::{INFINITY, NEG_INFINITY};
 
         let (mut min_x, mut min_y) = (INFINITY, INFINITY);
         let (mut max_x, mut max_y) = (NEG_INFINITY, NEG_INFINITY);
-        for &Component { position: (x, y), dimension: (width, height), .. } in components {
+        for &Element { position: (x, y), dimension: (width, height), .. } in elements {
             min_x = min_x.min(x);
             min_y = min_y.min(y);
             max_x = max_x.max(x + width);
@@ -26,7 +26,7 @@ impl super::Format for SVG {
         let height = (max_y - min_y) * scale;
 
         let mut body = String::new();
-        for &Component { ref name, position: (x, y), dimension: (width, height) } in components {
+        for &Element { ref name, position: (x, y), dimension: (width, height) } in elements {
             body.push_str(&format!(
                 "    <rect x=\"{:.0}\" \
                            y=\"{:.0}\" \

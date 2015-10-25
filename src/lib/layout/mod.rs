@@ -5,7 +5,7 @@ use Result;
 /// A layout strategy.
 pub trait Layout {
     /// Perform the construction.
-    fn construct(&self, &Configuration) -> Result<Vec<Component>>;
+    fn construct(&self, &Configuration) -> Result<Vec<Element>>;
 }
 
 /// A configuration of a layout strategy.
@@ -18,8 +18,8 @@ pub struct Configuration {
     pub l3_area: f64,
 }
 
-/// A layout component.
-pub struct Component {
+/// A layout element.
+pub struct Element {
     /// The name.
     pub name: String,
     /// The coordinates of the bottom-left corner.

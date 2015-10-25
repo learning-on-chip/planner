@@ -1,15 +1,15 @@
 use std::io::Write;
 
 use Result;
-use layout::Component;
+use layout::Element;
 
 /// The 3D-ICE format.
 pub struct ThreeDICE;
 
 impl super::Format for ThreeDICE {
-    fn write(&self, components: &[Component], writer: &mut Write) -> Result<()> {
+    fn write(&self, elements: &[Element], writer: &mut Write) -> Result<()> {
         let mut first = true;
-        for &Component { ref name, position: (x, y), dimension: (width, height) } in components {
+        for &Element { ref name, position: (x, y), dimension: (width, height) } in elements {
             if !first {
                 ok!(writer.write(b"\n"));
             } else {
