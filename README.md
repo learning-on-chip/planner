@@ -19,12 +19,12 @@ Options:
     --help                   Display this message.
 ```
 
-## Contributing
+## Contribution
 
 1. Fork the project.
 2. Implement your idea.
 3. Open a pull request.
 
+[doc]: https://learning-on-chip.github.io/planner
 [status-img]: https://travis-ci.org/learning-on-chip/planner.svg?branch=master
 [status-url]: https://travis-ci.org/learning-on-chip/planner
-[doc]: https://learning-on-chip.github.io/planner
