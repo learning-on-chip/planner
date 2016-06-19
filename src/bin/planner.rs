@@ -3,12 +3,11 @@ extern crate sql;
 extern crate sqlite;
 extern crate term;
 
-#[macro_use]
-extern crate planner;
+#[macro_use] extern crate planner;
 
 use planner::format::{self, Format};
 use planner::layout::{self, Layout};
-use planner::{Error, Result};
+use planner::Result;
 use sqlite::Connection;
 
 const USAGE: &'static str = "
@@ -23,14 +22,24 @@ Options:
     --help                   Display this message.
 ";
 
+#[allow(unused_must_use)]
 fn main() {
-    start().unwrap_or_else(|error| fail(error));
+    if let Err(error) = start() {
+        use std::io::Write;
+        if let Some(mut output) = term::stderr() {
+            output.fg(term::color::RED);
+            output.write_fmt(format_args!("Error: {}.\n", error));
+            output.reset();
+        }
+        std::process::exit(1);
+    }
 }
 
 fn start() -> Result<()> {
     let arguments = ok!(arguments::parse(std::env::args()));
     if arguments.get::<bool>("help").unwrap_or(false) {
-        help();
+        println!("{}", USAGE.trim());
+        return Ok(());
     }
 
     let backend = match arguments.get::<String>("database") {
@@ -81,19 +90,4 @@ fn find(backend: &Connection, table: &str, like: &str) -> Result<f64> {
         }
     }
     raise!("failed to find a required value in the table");
-}
-
-fn help() -> ! {
-    println!("{}", USAGE.trim());
-    std::process::exit(0);
-}
-
-#[allow(unused_must_use)]
-fn fail(error: Error) -> ! {
-    use std::io::Write;
-    if let Some(mut output) = term::stderr() {
-        output.fg(term::color::RED);
-        output.write_all(format!("Error: {}.\n", error).as_bytes());
-    }
-    std::process::exit(1);
 }
