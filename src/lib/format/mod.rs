@@ -5,7 +5,7 @@ use std::io::Write;
 use Result;
 use layout::Element;
 
-/// A formating strategy.
+/// A formatting strategy.
 pub trait Format {
     /// Perform the formatting.
     fn write(&self, &[Element], &mut Write) -> Result<()>;
