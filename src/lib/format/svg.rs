@@ -8,7 +8,7 @@ const WIDTH: f64 = 800.0;
 
 macro_rules! element_template(
     () => (
-r#"    <rect x="{x:.0}" y="{y:.0}" width="{width:.0}" height="{height:.0}" id="{id}" />
+r#"    <rect id="{id}" x="{x:.0}" y="{y:.0}" width="{width:.0}" height="{height:.0}" />
 "#
     );
 );
