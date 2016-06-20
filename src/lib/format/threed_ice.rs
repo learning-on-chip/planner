@@ -3,6 +3,17 @@ use std::io::Write;
 use Result;
 use layout::Element;
 
+macro_rules! element_template(
+    () => (
+r#"{name}:
+  position {x:.0}, {y:.0};
+  dimension {width:.0}, {height:.0};
+
+  power values 0;
+"#
+    );
+);
+
 /// The 3D-ICE format.
 pub struct ThreeDICE;
 
@@ -15,13 +26,12 @@ impl super::Format for ThreeDICE {
             } else {
                 first = false;
             }
-            ok!(writer.write_all(format!(
-"{}:
-  position {:.0}, {:.0};
-  dimension {:.0}, {:.0};
-
-  power values 0;
-", name, x * 1e6, y * 1e6, width * 1e6, height * 1e6).as_bytes()));
+            ok!(writer.write_fmt(format_args!(element_template!(),
+                                              name = name,
+                                              x = x * 1e6,
+                                              y = y * 1e6,
+                                              width = width * 1e6,
+                                              height = height * 1e6)));
         }
         Ok(())
     }
