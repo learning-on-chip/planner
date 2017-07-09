@@ -32,7 +32,7 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.24"
+version = "0.2.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -55,7 +55,7 @@ name = "sqlite"
 version = "0.23.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "sqlite3-sys 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -73,7 +73,7 @@ name = "sqlite3-sys"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.26 (registry+https://github.com/rust-lang/crates.io-index)",
  "sqlite3-src 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -100,7 +100,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum arguments 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "ef446ba94fd640b51609759f5280d5d2927386b58a1a4946594b4145f5d4a4c8"
 "checksum gcc 0.3.51 (registry+https://github.com/rust-lang/crates.io-index)" = "120d07f202dcc3f72859422563522b66fe6463a4c513df062874daad05f85f0a"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
-"checksum libc 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)" = "38f5c2b18a287cf78b4097db62e20f43cace381dc76ae5c0a3073067f78b7ddc"
+"checksum libc 0.2.26 (registry+https://github.com/rust-lang/crates.io-index)" = "30885bcb161cf67054244d10d4a7f4835ffd58773bc72e07d35fecf472295503"
 "checksum options 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7cae662c78308e9d468ee0548cd8852e66a9b4a945c16ddcc6eed3dd9ef14cb0"
 "checksum pkg-config 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "3a8b4c6b8165cd1a1cd4b9b120978131389f64bdaf456435caa41e630edba903"
 "checksum sql 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "c1006305372e8f9b02bfa018a03762b1cfd8dce228e44d41a6acb16f6bed6efb"
