@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SVG","The SVG format."],["ThreeDICE","The 3D-ICE format."]],"trait":[["Format","A formatting strategy."]]});

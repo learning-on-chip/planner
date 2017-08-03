@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Configuration","A configuration of a layout strategy."],["Element","A layout element."],["Tiles","A layout strategy that builds a road of L3 caches with sidewalks of cores."]],"trait":[["Layout","A layout strategy."]]});

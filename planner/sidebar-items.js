@@ -1,0 +1,1 @@
+initSidebarItems({"macro":[["ok","Unwrap a result or raise an error."],["raise","Raise an error."]],"mod":[["format","Formatting strategies."],["layout","Layout strategies."]],"struct":[["Error","An error."]],"type":[["Result","A result."]]});
